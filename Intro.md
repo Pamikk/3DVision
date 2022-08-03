@@ -3,10 +3,14 @@
 # Notes for 3D Vision
 + this notes will cover some useful knowledge and techs for 3D vision(including multi-view geometry, linear algebra, camera models, etc.)
 + Structure
-## 6D object pose estimation 
-+ This part is currently based on my undergraduate thesis finished in early 2019, something might be out of date, but it will update to the state-of-the-art later.
-+ Concepts
-  + Camera Model[1]\
+  + 3D Geometry
+    + Analytical Normal
+  + 6DoF object Pose Estimation
+  + Parametric Models
+    + 3DMM
+    + SMPL
+## 3D Geometry
++ Camera Model[1]\
     To define object pose, we need to understand how camera transfer obj from real word to images.
     + Pinhole Perspective(cental perspective)\
       ![img](imgs/pinhole-1.png)
@@ -44,32 +48,6 @@
           + distortion
             + different areas of a lens have sightly different focal length
     + Instrinsic and Extrinsic Parameters
-      + Rigid Transformation and Homogeneous Coordinates\
-        ![img](imgs/cam-wt-len-3.png) tranlation and rotation
-        + transform in non-homogeneous coordinates
-          $$^AP=R^BP+t$$
-        + in homogeneous coordinates
-          $$ ^A P =T^B P,where\ T^B=  \left \{\begin{array}{cc}
-                                               	R	&t  \\
-                                              	0	& 1
-                                              \end{array} \right\}$$
-        + Rotations
-          + parameterized by three Euler angles
-            + rotation matrix from B to A
-              $$ R^A_B\stackrel{def}{=}(^Ai_B,^Aj_B,^Ak_B)=\left(\begin{array}{ccc}
-                                      i_A\cdot i_B& j_A\cdot i_B& k_A\cdot i_B\\
-                                      i_A\cdot j_B& j_A\cdot j_B& k_A\cdot j_B\\
-                                      i_A\cdot k_B& j_A\cdot k_B& k_A\cdot k_B
-                                       \end{array}\right)$$
-          + Rodrigues's rotation formula
-            + rotate $v$ around unit vector $k$ by an angle $\theta$ according to right hand rule
-            $$ v_{rot} = v cos\theta+(k\times v) sin\theta + k(k\cdot v)(1-cos\theta)$$
-            + Rotation matrix 
-              $$Rot(k,\theta) = I + (sin\theta)K+(1-cos\theta)K^2$$
-              where $K=\left[\begin{array}{ccc}0 &-k_z & k_y\\k_z&0&-k_x\\-k_y & k_x & 0\end{array}\right]$
-        + perspective projection in homogeneous Coordinate 
-          + 3x4 matrix $M$
-            $$p=\frac{1}{Z}MP$$
       + Intrinsic Parameters
         + normalized coordinate system
           $$\hat{p} = \frac{1}{Z}(Id 0)P$$
@@ -92,10 +70,10 @@
                         \end{array}\right. $
           + skew
             + due to some manufacturing error
-          $$ p = K\hat{p}, where p =  $\left( \begin{array}{c} x \\ y\\1        \end{array}\right), and K\stackrel{def}{=}$\left( \begin{array}{ccc} 
+          $ p = K\hat{p}$, where p =  $$\left( \begin{array}{c} x \\ y\\1        \end{array}\right)$$, and $K\stackrel{def}{=}$ $\left( \begin{array}{ccc} 
                             \alpha & -\alpha cot\theta & x_0\\
                             0 &  \frac{\beta}{sin\theta} & y_0\\ 0 & 0 &1
-                        \end{array}\right) $$
+                        \end{array}\right) $
       + Extrinsic Parameters
         + equation above is written in coordinate frame (C) attatched to the camera
         + we need to transfer it to world coordinate system
@@ -105,6 +83,47 @@
         + Z not indenpendt of M and P
         + perspective matrix M can be written into 5 intrinsic parameters three rows of R and three coordiantes of t
           ![img](imgs/perspective-mat.png)
++ Tansformaions
+  + Rigid Transformation and Homogeneous Coordinates\
+  ![img](imgs/cam-wt-len-3.png) tranlation and rotation
+  + transform in non-homogeneous coordinates
+    $$^AP=R^BP+t$$
+  + in homogeneous coordinates
+    $$ ^A P =T^B P,where\ T^B=  \left \{\begin{array}{cc}
+                                          R	&t  \\
+                                          0	& 1
+                                        \end{array} \right\}$$
+  + Rotations
+    + parameterized by three Euler angles
+      + rotation matrix from B to A
+        $$ R^A_B\stackrel{def}{=}(^Ai_B,^Aj_B,^Ak_B)=\left(\begin{array}{ccc}
+                                i_A\cdot i_B& j_A\cdot i_B& k_A\cdot i_B\\
+                                i_A\cdot j_B& j_A\cdot j_B& k_A\cdot j_B\\
+                                i_A\cdot k_B& j_A\cdot k_B& k_A\cdot k_B
+                                  \end{array}\right)$$
+    + Rodrigues's rotation formula
+      + rotate $v$ around unit vector $k$ by an angle $\theta$ according to right hand rule
+      $$ v_{rot} = v cos\theta+(k\times v) sin\theta + k(k\cdot v)(1-cos\theta)$$
+      + Rotation matrix 
+        $$Rot(k,\theta) = I + (sin\theta)K+(1-cos\theta)K^2$$
+        where $K=\left[\begin{array}{ccc}0 &-k_z & k_y\\k_z&0&-k_x\\-k_y & k_x & 0\end{array}\right]$
+    + Quaterion
+  + perspective projection in homogeneous Coordinate 
+    + 3x4 matrix $M$
+      $$p=\frac{1}{Z}MP$$
++ Analytical Normal From Depth Map
+  + vector perpendicular to a surface/curve at point $(x,y,z)$
+    + $ \nabla F$
+    + F(x,y) = z
+      $\(\frac{dx}{dz},\frac{dy}{dz},-1)
+    + Fit a surface Ax+By+Cz = 1
+        $ Patch * \overrightarrow{n}=\overrightarrow{1}$\
+        $\overrightarrow{n}= (Patch^T*Patch)^{-1} Patch^T$
+        + more smooth
+## 6D object pose estimation 
++ This part is currently based on my undergraduate thesis finished in early 2019, something might be out of date, but it will update to the state-of-the-art later.
++ Concepts
+  
   + OpenGL
     + from model to screen\
       ![img](imgs/opengl.png)
@@ -114,13 +133,14 @@
       + ViewMatrix
         + lookAt(camera position,rotation,direction)
       + ModelMatrix
-      + P*V*M*position
+      + P\*V\*M\*position
   + 6D Object pose
     + rigid transformation of target object to camera frame(C)
     + degree of free dom (3 for rotation 3 for translation) $P=[R|t] \in SE(3)$
     + object pose vs camera pose
       + object pose is object position relative to camera(Model matrix)
       + camera pose is vice versa (related to View matrix)
+
 + Challenges
   + occlusion
   + symmetric
@@ -192,6 +212,6 @@
     + $ m =avg_{x\in M}||R_{gt}x+T_{gt}-(R_{pd}x+T_{pd})||$
     + true positive when $K_m d\geq m$ $k_m$ is a chosen coefficient and d is the model diamter
     + for symetric, ADI
-      + $m = avg_{x_1\in M}min_{x_2\inM}||R_{gt}x_1+T_{gt}-(R_{pd}x_2+T_{pd})||$
+      + $m = avg_{x_1\in M}min_{x_2\in M}||R_{gt}x_1+T_{gt}-(R_{pd}x_2+T_{pd})|| $
 ## References
 [1] Computer Vision A Mordern Approach(second edition); David A. Forsyth,  Jean Ponce
