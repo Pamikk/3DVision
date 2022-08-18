@@ -67,76 +67,83 @@
           + store current min z-value for each sample(pixel)
           + Additional buffer for depth values
           + z is always positive(smaller closer, larger further)
-  + Shading
-    + Applying material to an object
-    + Shading is local
-    + Blinn-Phong Refelctance Model
-      + Lambert's cosine law\
-        Light per unit area is proportional to $cos\theta = l\cdot n$
-      + Intensity $I/r^2$
-      + Lamberian(Diffuse) Shading
-      ![blingphong](imgs/bling-phone-highlight.png)
-        $$L_d = k_d(I/r^2)max(0,n\cdot l)$$
-        + $h = bisector(v,l)=\frac{v+h}{|v+h|}$, v close to mirror equals half vector near normal
-        $$ L_s = k_s(I/r^2)max(0,cos\alpha)^p =k_s(I/r^2)max(0,n\dot h)^p$$
-          + increasing narrows the reflection lobe
-      + Ambient Term
-        + Add costantcolor to account or disregardedillumination andfill in black shadows
-        $$ L_a = k_aI_a$$
-      
-    + Shading Frequencies
-      + Flat shaing
-        + Triangle face is flat - one normal vector
-        + not smooth
-      + Gouraud shading
-        + Interpolate colors froms vertices across triangle
-        + Each vertex has avector
-      + Phong shaidng
-        + Interpolate normalvectors across each triangle
-        + Compute full shading model at each pixel
-  + Pipeline
-  ![pipeline](imgs/pipeline.png)
-    + Shader Programs
-      + program vertex and fragment processing stages
-      + Describe operation on a single vertex(or fragment)
-      + shadertoy
-  + Texture Mapping
-    + Each triangle vertex is assigned a texture coordinate(u,v)
-    + Texture can be used multiple times(tiled)
-    + Interpolation across Triangles
-      + Barycentric Coordinate
-        + A coordinte system for triangles $(\alpha,\beta,\gamma)$
-        $(x,y) = \alpha A +\beta B+ \gamma C,\alpha+\beta+\gamma=1$
-          + inside the triangle if all three coordinates are non-negative
-        + barycentric coordinates are note invariant under projection
-    + Simple Texture Mapping
-      ```
-      for each rasterized screen sample (x,y):
-          (u,v) = evaluae texture coordinate at(x,y)
-          texcolor = texture.sample(u,v)\\usually diffuse albedo K_d
-      ```
-    + Texture Magnification
-      + insufficient texture resolution
-        + Bilinear interpolation
-    + Too large - aliasing
-      + from near to far :upsampling(magnification) to downsampling(minification)
-      + Mipmap
-        ![mipmap](imgs/mipmap-cal.png)
-        + allowing(fast,approx,square) range queries
-        + Image Pyramid
-        + D rounded to nearest integerer level
-        + Trilinear Interpolaton
-        + Limitations
-          + overblur
-          + Anisotropic Filtering
-            + Ripmaps and summed area tables
-              + Can look up axis-alighned rectangular zones
-              + Diagonal footprints still a proble==m
-          + EMA filtering
-            + mult lookups
-            + weighted verage
-            + mipmap hieracrchy still help
-            + handle irregular footprints.
-
-        
-  
++ Shading
+  + Applying material to an object
+  + Shading is local
+  + Blinn-Phong Refelctance Model
+    + Lambert's cosine law\
+      Light per unit area is proportional to $cos\theta = l\cdot n$
+    + Intensity $I/r^2$
+    + Lamberian(Diffuse) Shading
+    ![blingphong](imgs/bling-phone-highlight.png)
+      $$L_d = k_d(I/r^2)max(0,n\cdot l)$$
+      + $h = bisector(v,l)=\frac{v+h}{|v+h|}$, v close to mirror equals half vector near normal
+      $$ L_s = k_s(I/r^2)max(0,cos\alpha)^p =k_s(I/r^2)max(0,n\dot h)^p$$
+        + increasing narrows the reflection lobe
+    + Ambient Term
+      + Add costantcolor to account or disregardedillumination andfill in black shadows
+      $$ L_a = k_aI_a$$
+    
+  + Shading Frequencies
+    + Flat shaing
+      + Triangle face is flat - one normal vector
+      + not smooth
+    + Gouraud shading
+      + Interpolate colors froms vertices across triangle
+      + Each vertex has avector
+    + Phong shaidng
+      + Interpolate normalvectors across each triangle
+      + Compute full shading model at each pixel
++ Pipeline
+![pipeline](imgs/pipeline.png)
+  + Shader Programs
+    + program vertex and fragment processing stages
+    + Describe operation on a single vertex(or fragment)
+    + shadertoy
++ Texture Mapping
+  + Each triangle vertex is assigned a texture coordinate(u,v)
+  + Texture can be used multiple times(tiled)
+  + Interpolation across Triangles
+    + Barycentric Coordinate
+      + A coordinte system for triangles $(\alpha,\beta,\gamma)$
+      $(x,y) = \alpha A +\beta B+ \gamma C,\alpha+\beta+\gamma=1$
+        + inside the triangle if all three coordinates are non-negative
+      + barycentric coordinates are note invariant under projection
+  + Simple Texture Mapping
+    ```
+    for each rasterized screen sample (x,y):
+        (u,v) = evaluae texture coordinate at(x,y)
+        texcolor = texture.sample(u,v)\\usually diffuse albedo K_d
+    ```
+  + Texture Magnification
+    + insufficient texture resolution
+      + Bilinear interpolation
+  + Too large - aliasing
+    + from near to far :upsampling(magnification) to downsampling(minification)
+    + Mipmap
+      ![mipmap](imgs/mipmap-cal.png)
+      + allowing(fast,approx,square) range queries
+      + Image Pyramid
+      + D rounded to nearest integerer level
+      + Trilinear Interpolaton
+      + Limitations
+        + overblur
+        + Anisotropic Filtering
+          + Ripmaps and summed area tables
+            + Can look up axis-alighned rectangular zones
+            + Diagonal footprints still a proble==m
+        + EMA filtering
+          + mult lookups
+          + weighted verage
+          + mipmap hieracrchy still help
+          + handle irregular footprints.
+  + Environment Map
+    + Light from the environment
+    + Environmental Lighting
+      + Spheriacl Environment Map, Light Probes
+      + Cube Map
+      + Bump Mapping
+        + Adding surface detail without adding more triangles
+        + perturb surface normal per pixel(for shading comp only)
+        + Height shift per texel defined by a texutre
+         
