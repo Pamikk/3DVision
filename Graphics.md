@@ -141,9 +141,40 @@
     + Light from the environment
     + Environmental Lighting
       + Spheriacl Environment Map, Light Probes
-      + Cube Map
-      + Bump Mapping
-        + Adding surface detail without adding more triangles
-        + perturb surface normal per pixel(for shading comp only)
-        + Height shift per texel defined by a texutre
-         
+    + Cube Map
+    + Bump Mapping
+      + Adding surface detail without adding more triangles
+      + perturb surface normal per pixel(for shading comp only)
+      + Height shift per texel defined by a texutre
+      + Perturb normal(2D)
+        +  original surface normal n(p) =(0,1)
+        + Derivative at p is $dp = c*[h(p+1)-h(p)]$
+        + pertubrbed normal is then n(p) = (-dp,1).normalized()
+      + Pertub normal(3D)
+        + original n(p) =(0,0,1)
+        + $dp/du=c1*[h(u+1)-h(u)]$\
+            $dp/dv = c2*[h(v+1)-h(v)]
+        + n = (-dp/du,-dp/dv,1).normalized()
+    + Displacement mapping
+      + same texture
+      + actually moves the vertices
++ Geometry
+  + f(x,y,) = 0
+    + f(u,v) = (cosusinv,sinvsinu,cosv)
+  + Distance Function
+    + Level set Methods
+  + Fractals
+  + Implicit Representation
+    + Compact descript
+    + certain queires easy
+    + good for ray-to-surface intersection
+    + easy to handle changes in topology
+    + difficult in complex
+  + Explicit Representation
+    + Point cloud
+    + Polygon Mesh
+    + wavefromg object
+      + vertices,normals,texture coordinates and their connectivites
+  + Bezier curves
+    + Evaluation - de Casteljau lagorithm
+    
