@@ -160,7 +160,7 @@
       + actually moves the vertices
 + Geometry
   + f(x,y,) = 0
-    + f(u,v) = (cosusinv,sinvsinu,cosv)
+    + f(u,v) = (cosu sinv,sinv sinu,cosv)
   + Distance Function
     + Level set Methods
   + Fractals
@@ -177,4 +177,38 @@
       + vertices,normals,texture coordinates and their connectivites
   + Bezier curves
     + Evaluation - de Casteljau lagorithm
++ Ray Tracing
+  + rasterization couldn't handle global effects
+    + soft shadows
+    + light bounces more than once
+  + Three ideas
+    + Light travels in straight lines
+    + Light rays do not collide with each other if they cross
+    + 
+  + Ray casting
+    + gen an img by casting one ray per pixel
+    + check for shadows by sending a ray to the light
+  + Recursive (Witted-Style) Ray Tracing
+    + Intersection with Triangle Mesh
+      + Plane Equation if p satisfies it then p i on the plane 
+       $$ p:(p-p')\cdot N=0; ax+by+cz+d =0$$
+      + Ray equation 
+        $$ r(t)=o+td$$
+      + intersection
+        $$ t=\frac{(p'-o)\cdot N}{d\cdot N},t\geq 0$$ 
+      + Moller Trumbore Algorithm
+        + barycentric coordinate dirrectly
+         ![mt alg](imgs/MTAlg.png) 
+      + Accelerating Ray-Surface Intersection
+        + Bounding Volume - bound complex object with a simple volume
+        + AABB Intersection
+          + 2D ![AABB](imgs/AABB.png)
+          + 3D 
+            + ray enters the box only when it enters all pairs of slabs
+            + exits as long as any pair of slabs
+            + $t_{enter} = max(t_{min}),t_{exit} = min(t_{max})
+               + $t_{enter}<t_{exit}, t_{exit}\geq 0 $
+               
+        
+    
     
